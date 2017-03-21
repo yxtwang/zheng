@@ -3,6 +3,7 @@
 <mapper namespace="com.zheng.cms.dao.mapper.CmsArticleMapper">
   <resultMap id="BaseResultMap" type="com.zheng.cms.dao.model.CmsArticle">
     <id column="article_id" jdbcType="INTEGER" property="articleId" />
+    <result column="topic_id" jdbcType="INTEGER" property="topicId" />
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="author" jdbcType="VARCHAR" property="author" />
     <result column="fromurl" jdbcType="VARCHAR" property="fromurl" />
@@ -79,8 +80,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    article_id, title, author, fromurl, image, keywords, description, type, allowcomments, 
-    status, user_id, readnumber, ctime, orders
+    article_id, topic_id, title, author, fromurl, image, keywords, description, type, 
+    allowcomments, status, user_id, readnumber, ctime, orders
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -142,24 +143,27 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.zheng.cms.dao.model.CmsArticle">
-    insert into cms_article (article_id, title, author, 
-      fromurl, image, keywords, 
-      description, type, allowcomments, 
-      status, user_id, readnumber, 
-      ctime, orders, content
-      )
-    values (#{articleId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, 
-      #{fromurl,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR}, #{keywords,jdbcType=VARCHAR}, 
-      #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{allowcomments,jdbcType=TINYINT}, 
-      #{status,jdbcType=TINYINT}, #{userId,jdbcType=INTEGER}, #{readnumber,jdbcType=INTEGER}, 
-      #{ctime,jdbcType=BIGINT}, #{orders,jdbcType=BIGINT}, #{content,jdbcType=LONGVARCHAR}
-      )
+    insert into cms_article (article_id, topic_id, title, 
+      author, fromurl, image, 
+      keywords, description, type, 
+      allowcomments, status, user_id, 
+      readnumber, ctime, orders, 
+      content)
+    values (#{articleId,jdbcType=INTEGER}, #{topicId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{author,jdbcType=VARCHAR}, #{fromurl,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR}, 
+      #{keywords,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
+      #{allowcomments,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{userId,jdbcType=INTEGER}, 
+      #{readnumber,jdbcType=INTEGER}, #{ctime,jdbcType=BIGINT}, #{orders,jdbcType=BIGINT}, 
+      #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.zheng.cms.dao.model.CmsArticle">
     insert into cms_article
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="articleId != null">
         article_id,
+      </if>
+      <if test="topicId != null">
+        topic_id,
       </if>
       <if test="title != null">
         title,
@@ -207,6 +211,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="articleId != null">
         #{articleId,jdbcType=INTEGER},
+      </if>
+      <if test="topicId != null">
+        #{topicId,jdbcType=INTEGER},
       </if>
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
@@ -264,6 +271,9 @@
       <if test="record.articleId != null">
         article_id = #{record.articleId,jdbcType=INTEGER},
       </if>
+      <if test="record.topicId != null">
+        topic_id = #{record.topicId,jdbcType=INTEGER},
+      </if>
       <if test="record.title != null">
         title = #{record.title,jdbcType=VARCHAR},
       </if>
@@ -314,6 +324,7 @@
   <update id="updateByExampleWithBLOBs" parameterType="map">
     update cms_article
     set article_id = #{record.articleId,jdbcType=INTEGER},
+      topic_id = #{record.topicId,jdbcType=INTEGER},
       title = #{record.title,jdbcType=VARCHAR},
       author = #{record.author,jdbcType=VARCHAR},
       fromurl = #{record.fromurl,jdbcType=VARCHAR},
@@ -335,6 +346,7 @@
   <update id="updateByExample" parameterType="map">
     update cms_article
     set article_id = #{record.articleId,jdbcType=INTEGER},
+      topic_id = #{record.topicId,jdbcType=INTEGER},
       title = #{record.title,jdbcType=VARCHAR},
       author = #{record.author,jdbcType=VARCHAR},
       fromurl = #{record.fromurl,jdbcType=VARCHAR},
@@ -355,6 +367,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.zheng.cms.dao.model.CmsArticle">
     update cms_article
     <set>
+      <if test="topicId != null">
+        topic_id = #{topicId,jdbcType=INTEGER},
+      </if>
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
       </if>
@@ -402,7 +417,8 @@
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.zheng.cms.dao.model.CmsArticle">
     update cms_article
-    set title = #{title,jdbcType=VARCHAR},
+    set topic_id = #{topicId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
       author = #{author,jdbcType=VARCHAR},
       fromurl = #{fromurl,jdbcType=VARCHAR},
       image = #{image,jdbcType=VARCHAR},
@@ -420,7 +436,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.zheng.cms.dao.model.CmsArticle">
     update cms_article
-    set title = #{title,jdbcType=VARCHAR},
+    set topic_id = #{topicId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
       author = #{author,jdbcType=VARCHAR},
       fromurl = #{fromurl,jdbcType=VARCHAR},
       image = #{image,jdbcType=VARCHAR},

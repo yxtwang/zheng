@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.zheng.cms.dao.model.CmsPage">
     <id column="page_id" jdbcType="INTEGER" property="pageId" />
     <result column="pid" jdbcType="INTEGER" property="pid" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="alias" jdbcType="VARCHAR" property="alias" />
     <result column="keywords" jdbcType="VARCHAR" property="keywords" />
     <result column="description" jdbcType="VARCHAR" property="description" />
@@ -72,7 +73,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    page_id, pid, alias, keywords, description, ctime, orders
+    page_id, pid, title, alias, keywords, description, ctime, orders
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -134,12 +135,14 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.zheng.cms.dao.model.CmsPage">
-    insert into cms_page (page_id, pid, alias, 
-      keywords, description, ctime, 
-      orders, content)
-    values (#{pageId,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, #{alias,jdbcType=VARCHAR}, 
-      #{keywords,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{ctime,jdbcType=BIGINT}, 
-      #{orders,jdbcType=BIGINT}, #{content,jdbcType=LONGVARCHAR})
+    insert into cms_page (page_id, pid, title, 
+      alias, keywords, description, 
+      ctime, orders, content
+      )
+    values (#{pageId,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{alias,jdbcType=VARCHAR}, #{keywords,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{ctime,jdbcType=BIGINT}, #{orders,jdbcType=BIGINT}, #{content,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.zheng.cms.dao.model.CmsPage">
     insert into cms_page
@@ -149,6 +152,9 @@
       </if>
       <if test="pid != null">
         pid,
+      </if>
+      <if test="title != null">
+        title,
       </if>
       <if test="alias != null">
         alias,
@@ -175,6 +181,9 @@
       </if>
       <if test="pid != null">
         #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
       </if>
       <if test="alias != null">
         #{alias,jdbcType=VARCHAR},
@@ -211,6 +220,9 @@
       <if test="record.pid != null">
         pid = #{record.pid,jdbcType=INTEGER},
       </if>
+      <if test="record.title != null">
+        title = #{record.title,jdbcType=VARCHAR},
+      </if>
       <if test="record.alias != null">
         alias = #{record.alias,jdbcType=VARCHAR},
       </if>
@@ -238,6 +250,7 @@
     update cms_page
     set page_id = #{record.pageId,jdbcType=INTEGER},
       pid = #{record.pid,jdbcType=INTEGER},
+      title = #{record.title,jdbcType=VARCHAR},
       alias = #{record.alias,jdbcType=VARCHAR},
       keywords = #{record.keywords,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
@@ -252,6 +265,7 @@
     update cms_page
     set page_id = #{record.pageId,jdbcType=INTEGER},
       pid = #{record.pid,jdbcType=INTEGER},
+      title = #{record.title,jdbcType=VARCHAR},
       alias = #{record.alias,jdbcType=VARCHAR},
       keywords = #{record.keywords,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
@@ -266,6 +280,9 @@
     <set>
       <if test="pid != null">
         pid = #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
       </if>
       <if test="alias != null">
         alias = #{alias,jdbcType=VARCHAR},
@@ -291,6 +308,7 @@
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.zheng.cms.dao.model.CmsPage">
     update cms_page
     set pid = #{pid,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
       alias = #{alias,jdbcType=VARCHAR},
       keywords = #{keywords,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
@@ -302,6 +320,7 @@
   <update id="updateByPrimaryKey" parameterType="com.zheng.cms.dao.model.CmsPage">
     update cms_page
     set pid = #{pid,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
       alias = #{alias,jdbcType=VARCHAR},
       keywords = #{keywords,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},

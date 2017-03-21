@@ -3,7 +3,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/shuzheng/zheng/pulls)
 [![GitHub forks](https://img.shields.io/github/forks/shuzheng/zheng.svg?style=social&label=Fork)](https://github.com/shuzheng/zheng)
 
-交流QQ群：133107819🈵、284280411♨️(群内含各种工具和文档下载)
+交流QQ群：133107819🈵、284280411♨️、528049386♨️(群内含各种工具和文档下载)
 
 ## 前言
 
@@ -130,16 +130,6 @@ Spring+SpringMVC+Mybatis框架集成公共模块，包括公共配置、MybatisG
 
 本系统是基于RBAC授权和基于用户授权的细粒度权限控制通用平台，并提供单点登录、会话管理和日志管理。接入的系统可自由定义组织、角色、权限、资源等。
 
-**系统功能概述：**
-
-- 系统组织管理：系统和组织增加、删除、修改、查询功能。
-- 用户角色管理：用户和角色增加、删除、修改、查询功能。
-- 资源权限管理：资源和权限增加、删除、修改、查询功能。
-- 权限分配管理：提供给角色和用户的权限增加、删除、修改、查询功能。
-- 单点登录(SSO)：提供统一用户单点登录认证、用户鉴权功能。
-- 用户会话管理：提供分布式用户会话管理
-- 操作日志管理：提供记录用户登录、操作等日志。
-
 > zheng-oss
 
 文件存储系统，提供四种方案：
@@ -255,13 +245,17 @@ zheng-ui、zheng-common => zheng-upms => 其他
 
 ### 启动顺序
 
-- 新建zheng数据库，导入zheng.sql
+- 新建zheng数据库，导入project-bootstrap文件夹下的zheng-xxx.sql（使用最新版）
 
 - 修改各dao模块和rpc-service模块的redis.properties、jdbc.properties、generator.properties数据库连接等配置信息，其中master.redis.password、master.jdbc.password、slave.jdbc.password、generator.jdbc.password密码值使用了AES加密，请使用com.zheng.common.util.AESUtil工具类修改这些值
 
-- 启动 zheng-upms-rpc-service(运行ZhengUpmsRpcServiceApplication#main方法启动) => zheng-upms-server(jetty) => zheng-xxx-rpc-service(main方法) => zheng-xxx-webapp(jetty)
+- 首先启动 zheng-upms-rpc-service(直接运行src目录下的ZhengUpmsRpcServiceApplication#main方法启动) => zheng-upms-server(jetty)，然后按需启动对应子系统xxx的zheng-xxx-rpc-service(main方法) => zheng-xxx-webapp(jetty)
 
-- 访问 [统一后台地址 http://upms.zhangshuzheng.cn:1111/ ](http://upms.zhangshuzheng.cn:1111/ "统一后台地址")，默认帐号密码：admin/123456
+![rpc-service启动演示](project-bootstrap/start_rpc.png)
+
+![web启动演示](project-bootstrap/start_web.png)
+
+- 访问 [统一后台地址 http://upms.zhangshuzheng.cn:1111/ ](http://upms.zhangshuzheng.cn:1111/ "统一后台地址")，子系统菜单已经配置到zheng-upms权限中，不用直接访问子系统，默认帐号密码：admin/123456
 
 - 登录成功后，可在右上角切换已注册系统访问
 
@@ -324,9 +318,9 @@ zheng-ui、zheng-common => zheng-upms => 其他
 演示地址： [http://www.zhangshuzheng.cn/zhengAdmin](http://www.zhangshuzheng.cn/zhengAdmin "演示地址")
 
 ### 预览图
-![login](project-bootstrap/zheng-upms-login.png)
-![index](project-bootstrap/zheng-upms-index.png)
-![crud](zheng-ui/src/images/zheng-upms-theme.png)
+![login](project-bootstrap/zheng-login.png)
+![upms](project-bootstrap/zheng-upms.png)
+![cms](project-bootstrap/zheng-cms.png)
 ![swagger](project-bootstrap/api.png)
 
 ### 数据模型
@@ -337,6 +331,10 @@ zheng-ui、zheng-common => zheng-upms => 其他
 
 ### 开发进度
 ![开发进度](project-bootstrap/progress.png)
+
+### 参与开发
+
+首先谢谢大家支持，如果你希望参与开发，欢迎通过[Github](https://github.com/shuzheng/zheng "Github")上fork本项目，并Pull Request您的commit。
 
 ## 附件
 
