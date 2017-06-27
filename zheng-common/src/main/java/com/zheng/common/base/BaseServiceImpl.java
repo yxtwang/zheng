@@ -1,5 +1,6 @@
 package com.zheng.common.base;
 
+import com.github.pagehelper.PageHelper;
 import com.zheng.common.db.DataSourceEnum;
 import com.zheng.common.db.DynamicDataSource;
 import com.zheng.common.util.SpringContextUtil;
@@ -117,11 +118,87 @@ public abstract class BaseServiceImpl<Mapper, Record, Example> implements BaseSe
 	}
 
 	@Override
+	public List<Record> selectByExampleWithBLOBsForStartPage(Example example, Integer pageNum, Integer pageSize) {
+		try {
+			DynamicDataSource.setDataSource(DataSourceEnum.SLAVE.getName());
+			Method selectByExampleWithBLOBs = mapper.getClass().getDeclaredMethod("selectByExampleWithBLOBs", example.getClass());
+			PageHelper.startPage(pageNum, pageSize, false);
+			Object result = selectByExampleWithBLOBs.invoke(mapper, example);
+			return (List<Record>) result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		DynamicDataSource.clearDataSource();
+		return null;
+	}
+
+	@Override
+	public List<Record> selectByExampleForStartPage(Example example, Integer pageNum, Integer pageSize) {
+		try {
+			DynamicDataSource.setDataSource(DataSourceEnum.SLAVE.getName());
+			Method selectByExample = mapper.getClass().getDeclaredMethod("selectByExample", example.getClass());
+			PageHelper.startPage(pageNum, pageSize, false);
+			Object result = selectByExample.invoke(mapper, example);
+			return (List<Record>) result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		DynamicDataSource.clearDataSource();
+		return null;
+	}
+
+	@Override
+	public List<Record> selectByExampleWithBLOBsForOffsetPage(Example example, Integer offset, Integer limit) {
+		try {
+			DynamicDataSource.setDataSource(DataSourceEnum.SLAVE.getName());
+			Method selectByExampleWithBLOBs = mapper.getClass().getDeclaredMethod("selectByExampleWithBLOBs", example.getClass());
+			PageHelper.offsetPage(offset, limit, false);
+			Object result = selectByExampleWithBLOBs.invoke(mapper, example);
+			return (List<Record>) result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		DynamicDataSource.clearDataSource();
+		return null;
+	}
+
+	@Override
+	public List<Record> selectByExampleForOffsetPage(Example example, Integer offset, Integer limit) {
+		try {
+			DynamicDataSource.setDataSource(DataSourceEnum.SLAVE.getName());
+			Method selectByExample = mapper.getClass().getDeclaredMethod("selectByExample", example.getClass());
+			PageHelper.offsetPage(offset, limit, false);
+			Object result = selectByExample.invoke(mapper, example);
+			return (List<Record>) result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		DynamicDataSource.clearDataSource();
+		return null;
+	}
+
+	@Override
 	public Record selectFirstByExample(Example example) {
 		try {
 			DynamicDataSource.setDataSource(DataSourceEnum.SLAVE.getName());
 			Method selectByExample = mapper.getClass().getDeclaredMethod("selectByExample", example.getClass());
 			List<Record> result = (List<Record>) selectByExample.invoke(mapper, example);
+			if (null != result && result.size() > 0) {
+				return result.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		DynamicDataSource.clearDataSource();
+		return null;
+	}
+
+	@Override
+	public Record selectFirstByExampleWithBLOBs(Example example) {
+		try {
+			DynamicDataSource.setDataSource(DataSourceEnum.SLAVE.getName());
+			Method selectByExampleWithBLOBs = mapper.getClass().getDeclaredMethod("selectByExampleWithBLOBs", example.getClass());
+			List<Record> result = (List<Record>) selectByExampleWithBLOBs.invoke(mapper, example);
 			if (null != result && result.size() > 0) {
 				return result.get(0);
 			}

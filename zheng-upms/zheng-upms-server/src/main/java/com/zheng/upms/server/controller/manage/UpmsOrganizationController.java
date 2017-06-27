@@ -43,7 +43,7 @@ public class UpmsOrganizationController extends BaseController {
     @RequiresPermissions("upms:organization:read")
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index() {
-        return "/manage/organization/index";
+        return "/manage/organization/index.jsp";
     }
 
     @ApiOperation(value = "组织列表")
@@ -53,15 +53,18 @@ public class UpmsOrganizationController extends BaseController {
     public Object list(
             @RequestParam(required = false, defaultValue = "0", value = "offset") int offset,
             @RequestParam(required = false, defaultValue = "10", value = "limit") int limit,
+            @RequestParam(required = false, defaultValue = "", value = "search") String search,
             @RequestParam(required = false, value = "sort") String sort,
             @RequestParam(required = false, value = "order") String order) {
         UpmsOrganizationExample upmsOrganizationExample = new UpmsOrganizationExample();
-        upmsOrganizationExample.setOffset(offset);
-        upmsOrganizationExample.setLimit(limit);
         if (!StringUtils.isBlank(sort) && !StringUtils.isBlank(order)) {
             upmsOrganizationExample.setOrderByClause(sort + " " + order);
         }
-        List<UpmsOrganization> rows = upmsOrganizationService.selectByExample(upmsOrganizationExample);
+        if (StringUtils.isNotBlank(search)) {
+            upmsOrganizationExample.or()
+                    .andNameLike("%" + search + "%");
+        }
+        List<UpmsOrganization> rows = upmsOrganizationService.selectByExampleForOffsetPage(upmsOrganizationExample, offset, limit);
         long total = upmsOrganizationService.countByExample(upmsOrganizationExample);
         Map<String, Object> result = new HashMap<>();
         result.put("rows", rows);
@@ -73,7 +76,7 @@ public class UpmsOrganizationController extends BaseController {
     @RequiresPermissions("upms:organization:create")
     @RequestMapping(value = "/create", method = RequestMethod.GET)
     public String create() {
-        return "/manage/organization/create";
+        return "/manage/organization/create.jsp";
     }
 
     @ApiOperation(value = "新增组织")
@@ -109,7 +112,7 @@ public class UpmsOrganizationController extends BaseController {
     public String update(@PathVariable("id") int id, ModelMap modelMap) {
         UpmsOrganization organization = upmsOrganizationService.selectByPrimaryKey(id);
         modelMap.put("organization", organization);
-        return "/manage/organization/update";
+        return "/manage/organization/update.jsp";
     }
 
     @ApiOperation(value = "修改组织")

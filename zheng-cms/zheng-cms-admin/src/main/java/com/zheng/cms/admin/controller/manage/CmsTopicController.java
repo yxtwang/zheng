@@ -43,7 +43,7 @@ public class CmsTopicController extends BaseController {
 	@RequiresPermissions("cms:topic:read")
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String index() {
-		return "/manage/topic/index";
+		return "/manage/topic/index.jsp";
 	}
 
 	@ApiOperation(value = "评论列表")
@@ -56,12 +56,10 @@ public class CmsTopicController extends BaseController {
 			@RequestParam(required = false, value = "sort") String sort,
 			@RequestParam(required = false, value = "order") String order) {
 		CmsTopicExample cmsTopicExample = new CmsTopicExample();
-		cmsTopicExample.setOffset(offset);
-		cmsTopicExample.setLimit(limit);
 		if (!StringUtils.isBlank(sort) && !StringUtils.isBlank(order)) {
 			cmsTopicExample.setOrderByClause(sort + " " + order);
 		}
-		List<CmsTopic> rows = cmsTopicService.selectByExample(cmsTopicExample);
+		List<CmsTopic> rows = cmsTopicService.selectByExampleForOffsetPage(cmsTopicExample, offset, limit);
 		long total = cmsTopicService.countByExample(cmsTopicExample);
 		Map<String, Object> result = new HashMap<>();
 		result.put("rows", rows);
@@ -73,7 +71,7 @@ public class CmsTopicController extends BaseController {
 	@RequiresPermissions("cms:topic:create")
 	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public String create() {
-		return "/manage/topic/create";
+		return "/manage/topic/create.jsp";
 	}
 
 	@ApiOperation(value = "新增专题")
@@ -109,7 +107,7 @@ public class CmsTopicController extends BaseController {
 	public String update(@PathVariable("id") int id, ModelMap modelMap) {
 		CmsTopic topic = cmsTopicService.selectByPrimaryKey(id);
 		modelMap.put("topic", topic);
-		return "/manage/topic/update";
+		return "/manage/topic/update.jsp";
 	}
 
 	@ApiOperation(value = "修改专题")

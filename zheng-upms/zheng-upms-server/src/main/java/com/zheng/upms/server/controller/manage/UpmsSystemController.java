@@ -43,7 +43,7 @@ public class UpmsSystemController extends BaseController {
 	@RequiresPermissions("upms:system:read")
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String index() {
-		return "/manage/system/index";
+		return "/manage/system/index.jsp";
 	}
 
 	@ApiOperation(value = "系统列表")
@@ -53,15 +53,18 @@ public class UpmsSystemController extends BaseController {
 	public Object list(
 			@RequestParam(required = false, defaultValue = "0", value = "offset") int offset,
 			@RequestParam(required = false, defaultValue = "10", value = "limit") int limit,
+			@RequestParam(required = false, defaultValue = "", value = "search") String search,
 			@RequestParam(required = false, value = "sort") String sort,
 			@RequestParam(required = false, value = "order") String order) {
 		UpmsSystemExample upmsSystemExample = new UpmsSystemExample();
-		upmsSystemExample.setOffset(offset);
-		upmsSystemExample.setLimit(limit);
 		if (!StringUtils.isBlank(sort) && !StringUtils.isBlank(order)) {
 			upmsSystemExample.setOrderByClause(sort + " " + order);
 		}
-		List<UpmsSystem> rows = upmsSystemService.selectByExample(upmsSystemExample);
+		if (StringUtils.isNotBlank(search)) {
+			upmsSystemExample.or()
+					.andTitleLike("%" + search + "%");
+		}
+		List<UpmsSystem> rows = upmsSystemService.selectByExampleForOffsetPage(upmsSystemExample, offset, limit);
 		long total = upmsSystemService.countByExample(upmsSystemExample);
 		Map<String, Object> result = new HashMap<>();
 		result.put("rows", rows);
@@ -73,7 +76,7 @@ public class UpmsSystemController extends BaseController {
 	@RequiresPermissions("upms:system:create")
 	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public String create() {
-		return "/manage/system/create";
+		return "/manage/system/create.jsp";
 	}
 
 	@ApiOperation(value = "新增系统")
@@ -111,7 +114,7 @@ public class UpmsSystemController extends BaseController {
 	public String update(@PathVariable("id") int id, ModelMap modelMap) {
 		UpmsSystem system = upmsSystemService.selectByPrimaryKey(id);
 		modelMap.put("system", system);
-		return "/manage/system/update";
+		return "/manage/system/update.jsp";
 	}
 
 	@ApiOperation(value = "修改系统")

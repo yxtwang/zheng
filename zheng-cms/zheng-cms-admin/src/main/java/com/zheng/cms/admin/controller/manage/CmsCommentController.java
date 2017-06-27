@@ -39,7 +39,7 @@ public class CmsCommentController extends BaseController {
 	@RequiresPermissions("cms:comment:read")
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String index() {
-		return "/manage/comment/index";
+		return "/manage/comment/index.jsp";
 	}
 
 	@ApiOperation(value = "评论列表")
@@ -52,12 +52,10 @@ public class CmsCommentController extends BaseController {
 			@RequestParam(required = false, value = "sort") String sort,
 			@RequestParam(required = false, value = "order") String order) {
 		CmsCommentExample cmsCommentExample = new CmsCommentExample();
-		cmsCommentExample.setOffset(offset);
-		cmsCommentExample.setLimit(limit);
 		if (!StringUtils.isBlank(sort) && !StringUtils.isBlank(order)) {
 			cmsCommentExample.setOrderByClause(sort + " " + order);
 		}
-		List<CmsComment> rows = cmsCommentService.selectByExampleWithBLOBs(cmsCommentExample);
+		List<CmsComment> rows = cmsCommentService.selectByExampleWithBLOBsForOffsetPage(cmsCommentExample, offset, limit);
 		long total = cmsCommentService.countByExample(cmsCommentExample);
 		Map<String, Object> result = new HashMap<>();
 		result.put("rows", rows);
@@ -69,7 +67,7 @@ public class CmsCommentController extends BaseController {
 	@RequiresPermissions("cms:comment:create")
 	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public String create() {
-		return "/manage/comment/create";
+		return "/manage/comment/create.jsp";
 	}
 
 	@ApiOperation(value = "新增评论")
@@ -98,7 +96,7 @@ public class CmsCommentController extends BaseController {
 	public String update(@PathVariable("id") int id, ModelMap modelMap) {
 		CmsComment comment = cmsCommentService.selectByPrimaryKey(id);
 		modelMap.put("comment", comment);
-		return "/manage/comment/update";
+		return "/manage/comment/update.jsp";
 	}
 
 	@ApiOperation(value = "修改评论")

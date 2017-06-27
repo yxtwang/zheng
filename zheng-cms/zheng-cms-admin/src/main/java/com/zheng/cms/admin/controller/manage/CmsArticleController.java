@@ -13,7 +13,6 @@ import com.zheng.cms.rpc.api.CmsArticleService;
 import com.zheng.cms.rpc.api.CmsTopicService;
 import com.zheng.common.base.BaseController;
 import com.zheng.common.validator.LengthValidator;
-import com.zheng.common.validator.NotNullValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
@@ -22,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +49,7 @@ public class CmsArticleController extends BaseController {
 	@RequiresPermissions("cms:article:read")
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String index() {
-		return "/manage/article/index";
+		return "/manage/article/index.jsp";
 	}
 
 	@ApiOperation(value = "文章列表")
@@ -64,12 +62,10 @@ public class CmsArticleController extends BaseController {
 			@RequestParam(required = false, value = "sort") String sort,
 			@RequestParam(required = false, value = "order") String order) {
 		CmsArticleExample cmsArticleExample = new CmsArticleExample();
-		cmsArticleExample.setOffset(offset);
-		cmsArticleExample.setLimit(limit);
 		if (!StringUtils.isBlank(sort) && !StringUtils.isBlank(order)) {
 			cmsArticleExample.setOrderByClause(sort + " " + order);
 		}
-		List<CmsArticle> rows = cmsArticleService.selectByExample(cmsArticleExample);
+		List<CmsArticle> rows = cmsArticleService.selectByExampleForOffsetPage(cmsArticleExample, offset, limit);
 		long total = cmsArticleService.countByExample(cmsArticleExample);
 		Map<String, Object> result = new HashMap<>();
 		result.put("rows", rows);
@@ -85,7 +81,7 @@ public class CmsArticleController extends BaseController {
 		cmsTopicExample.setOrderByClause("ctime desc");
 		List<CmsTopic> cmsTopics = cmsTopicService.selectByExample(cmsTopicExample);
 		modelMap.put("cmsTopics", cmsTopics);
-		return "/manage/article/create";
+		return "/manage/article/create.jsp";
 	}
 
 	@ApiOperation(value = "新增文章")
@@ -103,6 +99,7 @@ public class CmsArticleController extends BaseController {
 		long time = System.currentTimeMillis();
 		cmsArticle.setCtime(time);
 		cmsArticle.setOrders(time);
+		cmsArticle.setReadnumber(0);
 		int count = cmsArticleService.insertSelective(cmsArticle);
 		return new CmsResult(CmsResultConstant.SUCCESS, count);
 	}
@@ -126,7 +123,7 @@ public class CmsArticleController extends BaseController {
 		CmsArticle article = cmsArticleService.selectByPrimaryKey(id);
 		modelMap.put("cmsTopics", cmsTopics);
 		modelMap.put("article", article);
-		return "/manage/article/update";
+		return "/manage/article/update.jsp";
 	}
 
 	@ApiOperation(value = "修改文章")

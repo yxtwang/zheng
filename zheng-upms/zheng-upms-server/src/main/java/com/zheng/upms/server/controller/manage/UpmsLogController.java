@@ -38,7 +38,7 @@ public class UpmsLogController extends BaseController {
     @RequiresPermissions("upms:log:read")
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index() {
-        return "/manage/log/index";
+        return "/manage/log/index.jsp";
     }
 
     @ApiOperation(value = "日志列表")
@@ -48,15 +48,18 @@ public class UpmsLogController extends BaseController {
     public Object list(
             @RequestParam(required = false, defaultValue = "0", value = "offset") int offset,
             @RequestParam(required = false, defaultValue = "10", value = "limit") int limit,
+            @RequestParam(required = false, defaultValue = "", value = "search") String search,
             @RequestParam(required = false, value = "sort") String sort,
             @RequestParam(required = false, value = "order") String order) {
         UpmsLogExample upmsLogExample = new UpmsLogExample();
-        upmsLogExample.setOffset(offset);
-        upmsLogExample.setLimit(limit);
         if (!StringUtils.isBlank(sort) && !StringUtils.isBlank(order)) {
             upmsLogExample.setOrderByClause(sort + " " + order);
         }
-        List<UpmsLog> rows = upmsLogService.selectByExample(upmsLogExample);
+        if (StringUtils.isNotBlank(search)) {
+            upmsLogExample.or()
+                    .andDescriptionLike("%" + search + "%");
+        }
+        List<UpmsLog> rows = upmsLogService.selectByExampleForOffsetPage(upmsLogExample, offset, limit);
         long total = upmsLogService.countByExample(upmsLogExample);
         Map<String, Object> result = new HashMap<>();
         result.put("rows", rows);

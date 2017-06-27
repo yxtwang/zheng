@@ -43,7 +43,7 @@ public class CmsSettingController extends BaseController {
 	@RequiresPermissions("cms:setting:read")
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String index() {
-		return "/manage/setting/index";
+		return "/manage/setting/index.jsp";
 	}
 
 	@ApiOperation(value = "评论列表")
@@ -56,12 +56,10 @@ public class CmsSettingController extends BaseController {
 			@RequestParam(required = false, value = "sort") String sort,
 			@RequestParam(required = false, value = "order") String order) {
 		CmsSettingExample cmsSettingExample = new CmsSettingExample();
-		cmsSettingExample.setOffset(offset);
-		cmsSettingExample.setLimit(limit);
 		if (!StringUtils.isBlank(sort) && !StringUtils.isBlank(order)) {
 			cmsSettingExample.setOrderByClause(sort + " " + order);
 		}
-		List<CmsSetting> rows = cmsSettingService.selectByExample(cmsSettingExample);
+		List<CmsSetting> rows = cmsSettingService.selectByExampleForOffsetPage(cmsSettingExample, offset, limit);
 		long total = cmsSettingService.countByExample(cmsSettingExample);
 		Map<String, Object> result = new HashMap<>();
 		result.put("rows", rows);
@@ -73,7 +71,7 @@ public class CmsSettingController extends BaseController {
 	@RequiresPermissions("cms:setting:create")
 	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public String create() {
-		return "/manage/setting/create";
+		return "/manage/setting/create.jsp";
 	}
 
 	@ApiOperation(value = "新增设置")
@@ -107,7 +105,7 @@ public class CmsSettingController extends BaseController {
 	public String update(@PathVariable("id") int id, ModelMap modelMap) {
 		CmsSetting setting = cmsSettingService.selectByPrimaryKey(id);
 		modelMap.put("setting", setting);
-		return "/manage/setting/update";
+		return "/manage/setting/update.jsp";
 	}
 
 	@ApiOperation(value = "修改设置")

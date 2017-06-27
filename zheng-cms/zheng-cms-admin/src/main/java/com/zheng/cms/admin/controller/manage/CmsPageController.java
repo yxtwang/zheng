@@ -43,7 +43,7 @@ public class CmsPageController extends BaseController {
 	@RequiresPermissions("cms:page:read")
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String index() {
-		return "/manage/page/index";
+		return "/manage/page/index.jsp";
 	}
 
 	@ApiOperation(value = "评论列表")
@@ -56,12 +56,10 @@ public class CmsPageController extends BaseController {
 			@RequestParam(required = false, value = "sort") String sort,
 			@RequestParam(required = false, value = "order") String order) {
 		CmsPageExample cmsPageExample = new CmsPageExample();
-		cmsPageExample.setOffset(offset);
-		cmsPageExample.setLimit(limit);
 		if (!StringUtils.isBlank(sort) && !StringUtils.isBlank(order)) {
 			cmsPageExample.setOrderByClause(sort + " " + order);
 		}
-		List<CmsPage> rows = cmsPageService.selectByExample(cmsPageExample);
+		List<CmsPage> rows = cmsPageService.selectByExampleForOffsetPage(cmsPageExample, offset, limit);
 		long total = cmsPageService.countByExample(cmsPageExample);
 		Map<String, Object> result = new HashMap<>();
 		result.put("rows", rows);
@@ -73,7 +71,7 @@ public class CmsPageController extends BaseController {
 	@RequiresPermissions("cms:page:create")
 	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public String create() {
-		return "/manage/page/create";
+		return "/manage/page/create.jsp";
 	}
 
 	@ApiOperation(value = "新增单页")
@@ -110,7 +108,7 @@ public class CmsPageController extends BaseController {
 	public String update(@PathVariable("id") int id, ModelMap modelMap) {
 		CmsPage page = cmsPageService.selectByPrimaryKey(id);
 		modelMap.put("page", page);
-		return "/manage/page/update";
+		return "/manage/page/update.jsp";
 	}
 
 	@ApiOperation(value = "修改单页")

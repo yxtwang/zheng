@@ -43,7 +43,7 @@ public class CmsMenuController extends BaseController {
 	@RequiresPermissions("cms:menu:read")
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String index() {
-		return "/manage/menu/index";
+		return "/manage/menu/index.jsp";
 	}
 
 	@ApiOperation(value = "评论列表")
@@ -56,12 +56,10 @@ public class CmsMenuController extends BaseController {
 			@RequestParam(required = false, value = "sort") String sort,
 			@RequestParam(required = false, value = "order") String order) {
 		CmsMenuExample cmsMenuExample = new CmsMenuExample();
-		cmsMenuExample.setOffset(offset);
-		cmsMenuExample.setLimit(limit);
 		if (!StringUtils.isBlank(sort) && !StringUtils.isBlank(order)) {
 			cmsMenuExample.setOrderByClause(sort + " " + order);
 		}
-		List<CmsMenu> rows = cmsMenuService.selectByExample(cmsMenuExample);
+		List<CmsMenu> rows = cmsMenuService.selectByExampleForOffsetPage(cmsMenuExample, offset, limit);
 		long total = cmsMenuService.countByExample(cmsMenuExample);
 		Map<String, Object> result = new HashMap<>();
 		result.put("rows", rows);
@@ -73,7 +71,7 @@ public class CmsMenuController extends BaseController {
 	@RequiresPermissions("cms:menu:create")
 	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public String create() {
-		return "/manage/menu/create";
+		return "/manage/menu/create.jsp";
 	}
 
 	@ApiOperation(value = "新增菜单")
@@ -109,7 +107,7 @@ public class CmsMenuController extends BaseController {
 	public String update(@PathVariable("id") int id, ModelMap modelMap) {
 		CmsMenu menu = cmsMenuService.selectByPrimaryKey(id);
 		modelMap.put("menu", menu);
-		return "/manage/menu/update";
+		return "/manage/menu/update.jsp";
 	}
 
 	@ApiOperation(value = "修改菜单")

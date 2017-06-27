@@ -43,7 +43,7 @@ public class CmsCategoryController extends BaseController {
 	@RequiresPermissions("cms:category:read")
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String index() {
-		return "/manage/category/index";
+		return "/manage/category/index.jsp";
 	}
 
 	@ApiOperation(value = "类目列表")
@@ -56,12 +56,10 @@ public class CmsCategoryController extends BaseController {
 			@RequestParam(required = false, value = "sort") String sort,
 			@RequestParam(required = false, value = "order") String order) {
 		CmsCategoryExample cmsCategoryExample = new CmsCategoryExample();
-		cmsCategoryExample.setOffset(offset);
-		cmsCategoryExample.setLimit(limit);
 		if (!StringUtils.isBlank(sort) && !StringUtils.isBlank(order)) {
 			cmsCategoryExample.setOrderByClause(sort + " " + order);
 		}
-		List<CmsCategory> rows = cmsCategoryService.selectByExample(cmsCategoryExample);
+		List<CmsCategory> rows = cmsCategoryService.selectByExampleForOffsetPage(cmsCategoryExample, offset, limit);
 		long total = cmsCategoryService.countByExample(cmsCategoryExample);
 		Map<String, Object> result = new HashMap<>();
 		result.put("rows", rows);
@@ -73,7 +71,7 @@ public class CmsCategoryController extends BaseController {
 	@RequiresPermissions("cms:category:create")
 	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public String create() {
-		return "/manage/category/create";
+		return "/manage/category/create.jsp";
 	}
 
 	@ApiOperation(value = "新增类目")
@@ -110,7 +108,7 @@ public class CmsCategoryController extends BaseController {
 	public String update(@PathVariable("id") int id, ModelMap modelMap) {
 		CmsCategory category = cmsCategoryService.selectByPrimaryKey(id);
 		modelMap.put("category", category);
-		return "/manage/category/update";
+		return "/manage/category/update.jsp";
 	}
 
 	@ApiOperation(value = "修改类目")
